@@ -1,0 +1,11 @@
+endpoint: https://eu1.prisma.sh/sumit-5fac90/db/dev
+datamodel: datamodel.prisma
+secret: mysecret123
+
+generate:
+    - generator: graphql-schema
+      output: ./generated
+
+hooks:
+  post-deploy:
+    - prisma generate

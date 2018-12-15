@@ -1,0 +1,12 @@
+type User {
+  id: ID! @unique
+  name: String!
+  email: String! @unique
+  password: String
+  google: GoogleAuth @relation(name: "GoogleAuth" onDelete: CASCADE)
+}
+
+type GoogleAuth {
+  googleId: String!@unique
+  user: User @relation(name: "GoogleAuth")
+}

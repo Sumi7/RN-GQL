@@ -1,0 +1,27 @@
+{
+  "name": "gql-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./src/index.js",
+    "dev": "nodemon ./src/index.js",
+    "prisma": "prisma deploy",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sumit Sati",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^6.2.0",
+    "graphql-yoga": "^1.16.7",
+    "jsonwebtoken": "^8.4.0",
+    "passport": "^0.4.0",
+    "passport-google-oauth20": "^1.0.0",
+    "prisma-binding": "^2.2.8"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.7",
+    "prisma-binding": "^2.2.8"
+  }
+}
