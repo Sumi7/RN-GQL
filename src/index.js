@@ -1,6 +1,5 @@
 const { GraphQLServer} = require('graphql-yoga')
 const passport = require('passport')
-const { Prisma } = require('prisma-binding')
 
 
 if (process.env.NODE_ENV !== 'production') {

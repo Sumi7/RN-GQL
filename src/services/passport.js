@@ -25,10 +25,9 @@ passport.use(new GoogleStrategy(
       clientID: process.env.googleClientID,
       clientSecret: process.env.googleClientSecret,
       callbackURL: '/auth/google/callback',
-      passReqToCallback: true,
       proxy: true
     },
-    async (req, accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
       const userData = await db.query.user({ where: { email: profile.emails[0].value } }, info)
       if (userData && userData.email && userData.google.googleId) {
         return done(null, userData)
