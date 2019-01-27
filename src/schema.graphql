@@ -1,11 +1,12 @@
 type Query {
   info: String
-  user(filter: String!): [User]!
+  users(filter: String): [User]!
 }
 
 type Mutation {
   signup(name: String!, email: String!, password: String!): AuthPayload
-  # login(email: String!, password: String!): AuthPayload
+  googleAuth(name: String!, email: String!, googleId: String!): AuthPayload
+  login(email: String!, password: String!): AuthPayload
 }
 
 type AuthPayload {

@@ -3,18 +3,17 @@
     "name": "client",
     "slug": "client",
     "privacy": "public",
-    "sdkVersion": "31.0.0",
+    "sdkVersion": "32.0.0",
     "platforms": [
-      "ios",
       "android"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,8 +21,14 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
+    "android": {
+      "package": "com.test.testapp",
+      "config": {
+        "googleSignIn": {
+          "apiKey": "AIzaSyD29bYoupnz4q-lfZpV6GmXR4l0PAQBCpg",
+          "certificateHash": "BB9761E6DA8668ED1C2ED96D4B13FDE89C3571BA"
+        }
+      }
     }
   }
 }

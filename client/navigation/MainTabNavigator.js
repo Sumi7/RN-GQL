@@ -1,40 +1,20 @@
 import React from 'react';
-import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
-import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import TabBarIcon from '../components/common/TabBarIcon';
+import TasksScreen from '../screens/TasksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
+const TodosStack = createStackNavigator({
+  Todos: TasksScreen,
 });
 
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+TodosStack.navigationOptions = {
+  tabBarLabel: 'Tasks',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ),
-};
-
-const LinksStack = createStackNavigator({
-  Links: LinksScreen,
-});
-
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'}
+      name='clipboard-check-outline'
     />
   ),
 };
@@ -48,13 +28,26 @@ SettingsStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
+      name='settings'
     />
   ),
 };
 
-export default createBottomTabNavigator({
-  HomeStack,
-  LinksStack,
-  SettingsStack,
-});
+export default createBottomTabNavigator(
+  {
+    TodosStack,
+    SettingsStack,
+  },
+  {
+    initialRouteName: 'TodosStack',
+    tabBarOptions: {
+      activeTintColor: '#00D8B6',
+      labelStyle: {
+        fontSize: 12,
+      },
+      style: {
+        backgroundColor: 'black',
+      },
+    }
+  },
+  );

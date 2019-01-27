@@ -1,45 +1,130 @@
+import '@babel/polyfill'
+
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Asset, Font, Icon } from 'expo';
-import AppNavigator from './navigation/AppNavigator';
+import { AppLoading, Asset, Font, Icon, Calendar, Permissions } from 'expo';
+import { createRootNavigator } from './navigation/AppNavigator';
+import { ApolloProvider } from 'react-apollo'
+import { ApolloClient } from 'apollo-client'
+import { createHttpLink } from 'apollo-link-http'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { ApolloLink, concat } from 'apollo-link'
+// import { WebSocketLink } from 'apollo-link-ws'
+import { AsyncStorage } from 'react-native'
+
+const AuthToken = async () => {
+  let token;
+  try {
+    token = await AsyncStorage.getItem('authToken')
+  } catch {
+    token = ""
+  }
+  return token
+}
+
+const signOut = async () => {
+  let token;
+  try {
+    token = await AsyncStorage.removeItem('authToken')
+  } catch {
+    token = ""
+  }
+  return token
+}
+
+// const getCalendar = (async () => {
+//   await Permissions.askAsync(Permissions.CALENDAR)
+//   const result = await Calendar.getCalendarsAsync()
+//   console.log("calendar", result)
+//   return result
+// })()
+
+console.log("token", AuthToken())
+
+const httpLink = createHttpLink({
+  uri: 'http://localhost:3006'
+})
+
+const authMiddleware = new ApolloLink((operation, forward) => {
+  const token = AuthToken()
+  operation.setContext({
+    headers: {
+      authorization: token ? `Bearer ${token}` : ''
+    }
+  })
+
+  return forward(operation)
+})
+
+// const link = split(
+//   // ({ query }) => {
+//   //   const { kind, operation } = getMainDefinition(query)
+//   //   return kind === 'OperationDefinition' && operation === 'subscription'
+//   // },
+//   authLink.concat(httpLink)
+// )
+
+const client = new ApolloClient({
+  link: concat(authMiddleware, httpLink),
+  cache: new InMemoryCache()
+})
 
 export default class App extends React.Component {
-  state = {
-    isLoadingComplete: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoadingComplete: false,
+    }
+    AuthToken().then(token => this.token = token)
+  }
+
+  async componentDidMount() {
+    try {
+      await fetch('http://localhost:3006/test')
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   render() {
-    // if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
+    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
-        <AppLoading
-          startAsync={this._loadResourcesAsync}
-          onError={this._handleLoadingError}
-          onFinish={this._handleFinishLoading}
-        />
+        <ApolloProvider client={client}>
+          <AppLoading
+            startAsync={this._loadResourcesAsync}
+            onError={this._handleLoadingError}
+            onFinish={this._handleFinishLoading}
+          />
+        </ApolloProvider>
       );
-    // } else {
-    //   return (
-    //     <View style={styles.container}>
-    //       {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-    //       <AppNavigator />
-    //     </View>
-    //   );
-    // }
+    } else {
+      const initialRouteName = this.token ? "App" : "Auth"
+      const Navigator = createRootNavigator(initialRouteName)
+      return (
+        <ApolloProvider client={client}>
+          <View style={styles.container}>
+            {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+            <Navigator />
+          </View>
+        </ApolloProvider>
+      );
+    }
   }
 
   _loadResourcesAsync = async () => {
     return Promise.all([
       Asset.loadAsync([
-        require('./assets/images/robot-dev.png'),
-        require('./assets/images/robot-prod.png'),
+        require('./assets/icons/logo-144.png'),
+        require('./assets/icons/icons8-google-48.png'),
+        require('./assets/icons/icons8-right-24.png')
       ]),
       Font.loadAsync({
         // This is the font that we are using for our tab bar
         ...Icon.Ionicons.font,
         // We include SpaceMono because we use it in HomeScreen.js. Feel free
         // to remove this if you are not using it in your app
-        'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
-      }),
+        'NunitoSans': require('./assets/fonts/NunitoSans-Bold.ttf'),
+      })
     ]);
   };
 
@@ -57,6 +142,7 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#615F5B',
+    fontFamily: 'NunitoSans',
   },
 });

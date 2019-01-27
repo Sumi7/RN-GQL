@@ -16,7 +16,6 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser(async (id, done) => {
-  console.log(JSON.stringify(db, getCircularReplacer()))
 	const user = await db.query.user({ where: { id } }, info).then( user => done(null, user))
 })
 
@@ -60,16 +59,3 @@ passport.use(new GoogleStrategy(
     }
   )
 )
-
-const getCircularReplacer = () => {
-  const seen = new WeakSet();
-  return (key, value) => {
-    if (typeof value === "object" && value !== null) {
-      if (seen.has(value)) {
-        return;
-      }
-      seen.add(value);
-    }
-    return value;
-  };
-};

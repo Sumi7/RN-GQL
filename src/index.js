@@ -14,8 +14,7 @@ require('./services/passport');
 
 const resolvers = {
 	Query,
-	Mutation,
-	AuthPayload
+	Mutation
 }
 
 const server = new GraphQLServer({
@@ -30,6 +29,7 @@ const server = new GraphQLServer({
 server.express.use(passport.initialize());
 server.express.use(passport.session());
 
+server.express.get('/test', () => console.log("recieved request from client"))
 server.express.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
 server.express.get('/auth/google/callback', passport.authenticate('google'), (req, res) => res.send('finished auth'))
 
