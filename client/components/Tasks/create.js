@@ -4,7 +4,7 @@ import CustomInput from '../common/input'
 import CustomCheckBox from '../common/checkBox'
 import { NunitoSans } from '../common/StyledText'
 
-const SubTasks = ({subTasks, onSubTaskChange}) => subTasks.map( st => <CustomCheckBox key={`subTask-${st.id}`} data={st} onSubTaskChange={onSubTaskChange} />)
+const SubTasks = ({subTasks, onSubTaskChange}) => subTasks.map( st => <CustomCheckBox key={`subTask-${st.index}`} data={st} onSubTaskChange={onSubTaskChange} />)
 
 const CreateTaskCard = ({ taskName, setTaskName, subTasks, onSubTaskChange, addSubtask } ) => {
 	return (
@@ -34,7 +34,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		display: 'flex',
 		width: '100%',
-		color: '#fff'
+		color: '#fff',
+		backgroundColor: '#000'
 	},
 	scroll: {
 		paddingTop: 5,

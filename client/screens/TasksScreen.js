@@ -4,6 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import defaultStyle from './defaultStyle'
 import AddButton from '../components/Tasks'
+import TasksContainer from '../components/Tasks/displayTasks'
 
 export default class TodosScreen extends React.Component {  
   state = {
@@ -37,7 +38,8 @@ export default class TodosScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={{ ...styles.container, ...this.state.showCard ? { backgroundColor: '#000' } : {} }}>
+        <TasksContainer />
         <View style={{ ...styles.fixedButton, ...this.state.showCard ? styles.showCard : {} }}>
           <AddButton onPressHandler={this.onPressHandler} extendButton={this.state.showCard} />
         </View>
@@ -50,13 +52,6 @@ export default class TodosScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    position: 'relative'
-  },
-  createTaskContainer: {
-    flex: 1,
-    paddingTop: 5,
-    paddingHorizontal: 5,
     backgroundColor: '#fff',
     position: 'relative'
   },

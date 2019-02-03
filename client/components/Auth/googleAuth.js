@@ -30,13 +30,13 @@ function GoogleAuth({ googleAuthMutation, navigation: { navigate }, login }) {
 			if (__DEV__) {
 				console.log("dev")
 				result = await Google.logInAsync({
-					androidClientId: '260444184096-pt7sapeu8nuv7ne2dpg8irprn10qkt7p.apps.googleusercontent.com',
+					androidClientId: '',
 					scopes: ['profile', 'email'],
 				});
 				console.log("result====>", result)
 			} else {
 				result = await Expo.Google.logInAsync({
-					androidStandaloneAppClientId: "260444184096-017ns508ovvdfv028pgc0j7vm5qa8sv2.apps.googleusercontent.com",
+					androidStandaloneAppClientId: "",
 					scopes: ['profile', 'email'],
 				});
 				console.log("result====>", result)

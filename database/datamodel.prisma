@@ -4,9 +4,26 @@ type User {
   email: String! @unique
   password: String
   google: GoogleAuth @relation(name: "GoogleAuth" onDelete: CASCADE)
+  tasks: [Task]! @relation(name: "Task" onDelete: CASCADE)
+  admin: Boolean
 }
 
 type GoogleAuth {
   googleId: String!@unique
   user: User @relation(name: "GoogleAuth")
+}
+
+type Task {
+  id: ID! @unique
+  taskName: String!
+  subTasks: [SubTask]! @relation(name: "SubTask" onDelete: CASCADE)
+  user: User @relation(name: "Task")
+}
+
+type SubTask {
+  id: ID! @unique
+  index: Int!
+  value: String!
+  completed: Boolean!
+  task: Task @relation(name: "SubTask")
 }

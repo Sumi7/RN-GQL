@@ -1,6 +1,6 @@
 endpoint: https://eu1.prisma.sh/sumit-5fac90/db/dev
 datamodel: datamodel.prisma
-secret: mysecret123
+secret: ${env:DB_SECRET}
 
 generate:
     - generator: graphql-schema

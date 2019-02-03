@@ -1,12 +1,16 @@
+# import Task from "../database/generated/prisma.graphql" 
+
 type Query {
   info: String
   users(filter: String): [User]!
+  getTasks: [Task]!
 }
 
 type Mutation {
   signup(name: String!, email: String!, password: String!): AuthPayload
   googleAuth(name: String!, email: String!, googleId: String!): AuthPayload
   login(email: String!, password: String!): AuthPayload
+  addTask(taskName: String!, subTasks: [SubTasksInput]!): Task
 }
 
 type AuthPayload {
@@ -14,8 +18,15 @@ type AuthPayload {
   user: User
 }
 
+input SubTasksInput {
+  index: Int!
+  value: String!
+  completed: Boolean!
+}
+
 type User {
   id: ID!
   name: String!
   email: String!
+  tasks: [Task]!
 }

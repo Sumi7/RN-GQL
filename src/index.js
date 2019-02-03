@@ -1,16 +1,14 @@
 const { GraphQLServer} = require('graphql-yoga')
-const passport = require('passport')
 
 
 if (process.env.NODE_ENV !== 'production') {
-	require('dotenv').load()
+	require('dotenv').config()
 }
 
 const { db } = require('./prisma')
 const Mutation = require('./resolvers/Mutation')
 const Query = require('./resolvers/Query')
-const AuthPayload = require('./resolvers/AuthPayload')
-require('./services/passport');
+// require('./services/passport');
 
 const resolvers = {
 	Query,
@@ -26,11 +24,6 @@ const server = new GraphQLServer({
 	})
 })
 
-server.express.use(passport.initialize());
-server.express.use(passport.session());
-
-server.express.get('/test', () => console.log("recieved request from client"))
-server.express.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
-server.express.get('/auth/google/callback', passport.authenticate('google'), (req, res) => res.send('finished auth'))
+server.express.get('/test', () => console.log("===== ===== recieved request from client ===== ====="))
 
 server.start({ port: 3006 }, () => console.log(`server running on port http://localhost:3006 env:(${process.env.NODE_ENV})`))

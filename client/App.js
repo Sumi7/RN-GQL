@@ -9,6 +9,7 @@ import { ApolloClient } from 'apollo-client'
 import { createHttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloLink, concat } from 'apollo-link'
+import { setContext } from 'apollo-link-context'
 // import { WebSocketLink } from 'apollo-link-ws'
 import { AsyncStorage } from 'react-native'
 
@@ -31,7 +32,7 @@ const signOut = async () => {
   }
   return token
 }
-
+// signOut()
 // const getCalendar = (async () => {
 //   await Permissions.askAsync(Permissions.CALENDAR)
 //   const result = await Calendar.getCalendarsAsync()
@@ -39,21 +40,29 @@ const signOut = async () => {
 //   return result
 // })()
 
-console.log("token", AuthToken())
-
 const httpLink = createHttpLink({
   uri: 'http://localhost:3006'
 })
 
-const authMiddleware = new ApolloLink((operation, forward) => {
-  const token = AuthToken()
-  operation.setContext({
+// const authMiddleware = new ApolloLink((operation, forward) => {
+//   const token = AuthToken()
+//   operation.setContext({
+//     headers: {
+//       authorization: token ? `Bearer ${token}` : ''
+//     }
+//   })
+
+//   return forward(operation)
+// })
+
+const authMiddleware = setContext(async (request, { headers }) => {
+  const token = await AuthToken()
+  return {
     headers: {
+      ...headers,
       authorization: token ? `Bearer ${token}` : ''
     }
-  })
-
-  return forward(operation)
+  }
 })
 
 // const link = split(
@@ -65,7 +74,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 // )
 
 const client = new ApolloClient({
-  link: concat(authMiddleware, httpLink),
+  link: authMiddleware.concat(httpLink),
   cache: new InMemoryCache()
 })
 
@@ -89,14 +98,12 @@ export default class App extends React.Component {
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
-        <ApolloProvider client={client}>
-          <AppLoading
-            startAsync={this._loadResourcesAsync}
-            onError={this._handleLoadingError}
-            onFinish={this._handleFinishLoading}
-          />
-        </ApolloProvider>
-      );
+        <AppLoading
+          startAsync={this._loadResourcesAsync}
+          onError={this._handleLoadingError}
+          onFinish={this._handleFinishLoading}
+        />
+      )
     } else {
       const initialRouteName = this.token ? "App" : "Auth"
       const Navigator = createRootNavigator(initialRouteName)

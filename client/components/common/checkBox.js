@@ -16,7 +16,7 @@ const CustomCheckBox = ({ data, data:{value, completed}, onSubTaskChange }) => {
 		<View style={styles.wrapper}>
 			<TouchableHighlight style={styles.checkbox} onPress={() => { onCompleted(!isCompleted); return updateSubtask() }}>
 				<View>
-					{ isCompleted && <MaterialCommunityIcons name='check' size={16} color='#fff'/> }					
+					{ isCompleted && <MaterialCommunityIcons name='check' size={18} color='#fff'/> }					
 				</View>
 			</TouchableHighlight>
 			<TextInput 
@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	checkbox: {
-		width: 20,
-		height: 20,
+		width: 25,
+		height: 25,
 		borderWidth: 1,
 		borderColor: '#fff',
 		marginRight: 20,
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		paddingHorizontal: 7,
 		paddingBottom: 6,
-		height: 20,
+		height: 30,
 	},
 })
 

@@ -2,6 +2,14 @@ type AggregateGoogleAuth {
   count: Int!
 }
 
+type AggregateSubTask {
+  count: Int!
+}
+
+type AggregateTask {
+  count: Int!
+}
+
 type AggregateUser {
   count: Int!
 }
@@ -134,6 +142,18 @@ type Mutation {
   upsertGoogleAuth(where: GoogleAuthWhereUniqueInput!, create: GoogleAuthCreateInput!, update: GoogleAuthUpdateInput!): GoogleAuth!
   deleteGoogleAuth(where: GoogleAuthWhereUniqueInput!): GoogleAuth
   deleteManyGoogleAuths(where: GoogleAuthWhereInput): BatchPayload!
+  createSubTask(data: SubTaskCreateInput!): SubTask!
+  updateSubTask(data: SubTaskUpdateInput!, where: SubTaskWhereUniqueInput!): SubTask
+  updateManySubTasks(data: SubTaskUpdateManyMutationInput!, where: SubTaskWhereInput): BatchPayload!
+  upsertSubTask(where: SubTaskWhereUniqueInput!, create: SubTaskCreateInput!, update: SubTaskUpdateInput!): SubTask!
+  deleteSubTask(where: SubTaskWhereUniqueInput!): SubTask
+  deleteManySubTasks(where: SubTaskWhereInput): BatchPayload!
+  createTask(data: TaskCreateInput!): Task!
+  updateTask(data: TaskUpdateInput!, where: TaskWhereUniqueInput!): Task
+  updateManyTasks(data: TaskUpdateManyMutationInput!, where: TaskWhereInput): BatchPayload!
+  upsertTask(where: TaskWhereUniqueInput!, create: TaskCreateInput!, update: TaskUpdateInput!): Task!
+  deleteTask(where: TaskWhereUniqueInput!): Task
+  deleteManyTasks(where: TaskWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -163,6 +183,12 @@ type Query {
   googleAuth(where: GoogleAuthWhereUniqueInput!): GoogleAuth
   googleAuths(where: GoogleAuthWhereInput, orderBy: GoogleAuthOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [GoogleAuth]!
   googleAuthsConnection(where: GoogleAuthWhereInput, orderBy: GoogleAuthOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GoogleAuthConnection!
+  subTask(where: SubTaskWhereUniqueInput!): SubTask
+  subTasks(where: SubTaskWhereInput, orderBy: SubTaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SubTask]!
+  subTasksConnection(where: SubTaskWhereInput, orderBy: SubTaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SubTaskConnection!
+  task(where: TaskWhereUniqueInput!): Task
+  tasks(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Task]!
+  tasksConnection(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TaskConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
@@ -171,7 +197,450 @@ type Query {
 
 type Subscription {
   googleAuth(where: GoogleAuthSubscriptionWhereInput): GoogleAuthSubscriptionPayload
+  subTask(where: SubTaskSubscriptionWhereInput): SubTaskSubscriptionPayload
+  task(where: TaskSubscriptionWhereInput): TaskSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+}
+
+type SubTask {
+  id: ID!
+  index: Int!
+  value: String!
+  completed: Boolean!
+  task: Task
+}
+
+type SubTaskConnection {
+  pageInfo: PageInfo!
+  edges: [SubTaskEdge]!
+  aggregate: AggregateSubTask!
+}
+
+input SubTaskCreateInput {
+  index: Int!
+  value: String!
+  completed: Boolean!
+  task: TaskCreateOneWithoutSubTasksInput
+}
+
+input SubTaskCreateManyWithoutTaskInput {
+  create: [SubTaskCreateWithoutTaskInput!]
+  connect: [SubTaskWhereUniqueInput!]
+}
+
+input SubTaskCreateWithoutTaskInput {
+  index: Int!
+  value: String!
+  completed: Boolean!
+}
+
+type SubTaskEdge {
+  node: SubTask!
+  cursor: String!
+}
+
+enum SubTaskOrderByInput {
+  id_ASC
+  id_DESC
+  index_ASC
+  index_DESC
+  value_ASC
+  value_DESC
+  completed_ASC
+  completed_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type SubTaskPreviousValues {
+  id: ID!
+  index: Int!
+  value: String!
+  completed: Boolean!
+}
+
+input SubTaskScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  index: Int
+  index_not: Int
+  index_in: [Int!]
+  index_not_in: [Int!]
+  index_lt: Int
+  index_lte: Int
+  index_gt: Int
+  index_gte: Int
+  value: String
+  value_not: String
+  value_in: [String!]
+  value_not_in: [String!]
+  value_lt: String
+  value_lte: String
+  value_gt: String
+  value_gte: String
+  value_contains: String
+  value_not_contains: String
+  value_starts_with: String
+  value_not_starts_with: String
+  value_ends_with: String
+  value_not_ends_with: String
+  completed: Boolean
+  completed_not: Boolean
+  AND: [SubTaskScalarWhereInput!]
+  OR: [SubTaskScalarWhereInput!]
+  NOT: [SubTaskScalarWhereInput!]
+}
+
+type SubTaskSubscriptionPayload {
+  mutation: MutationType!
+  node: SubTask
+  updatedFields: [String!]
+  previousValues: SubTaskPreviousValues
+}
+
+input SubTaskSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: SubTaskWhereInput
+  AND: [SubTaskSubscriptionWhereInput!]
+  OR: [SubTaskSubscriptionWhereInput!]
+  NOT: [SubTaskSubscriptionWhereInput!]
+}
+
+input SubTaskUpdateInput {
+  index: Int
+  value: String
+  completed: Boolean
+  task: TaskUpdateOneWithoutSubTasksInput
+}
+
+input SubTaskUpdateManyDataInput {
+  index: Int
+  value: String
+  completed: Boolean
+}
+
+input SubTaskUpdateManyMutationInput {
+  index: Int
+  value: String
+  completed: Boolean
+}
+
+input SubTaskUpdateManyWithoutTaskInput {
+  create: [SubTaskCreateWithoutTaskInput!]
+  delete: [SubTaskWhereUniqueInput!]
+  connect: [SubTaskWhereUniqueInput!]
+  disconnect: [SubTaskWhereUniqueInput!]
+  update: [SubTaskUpdateWithWhereUniqueWithoutTaskInput!]
+  upsert: [SubTaskUpsertWithWhereUniqueWithoutTaskInput!]
+  deleteMany: [SubTaskScalarWhereInput!]
+  updateMany: [SubTaskUpdateManyWithWhereNestedInput!]
+}
+
+input SubTaskUpdateManyWithWhereNestedInput {
+  where: SubTaskScalarWhereInput!
+  data: SubTaskUpdateManyDataInput!
+}
+
+input SubTaskUpdateWithoutTaskDataInput {
+  index: Int
+  value: String
+  completed: Boolean
+}
+
+input SubTaskUpdateWithWhereUniqueWithoutTaskInput {
+  where: SubTaskWhereUniqueInput!
+  data: SubTaskUpdateWithoutTaskDataInput!
+}
+
+input SubTaskUpsertWithWhereUniqueWithoutTaskInput {
+  where: SubTaskWhereUniqueInput!
+  update: SubTaskUpdateWithoutTaskDataInput!
+  create: SubTaskCreateWithoutTaskInput!
+}
+
+input SubTaskWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  index: Int
+  index_not: Int
+  index_in: [Int!]
+  index_not_in: [Int!]
+  index_lt: Int
+  index_lte: Int
+  index_gt: Int
+  index_gte: Int
+  value: String
+  value_not: String
+  value_in: [String!]
+  value_not_in: [String!]
+  value_lt: String
+  value_lte: String
+  value_gt: String
+  value_gte: String
+  value_contains: String
+  value_not_contains: String
+  value_starts_with: String
+  value_not_starts_with: String
+  value_ends_with: String
+  value_not_ends_with: String
+  completed: Boolean
+  completed_not: Boolean
+  task: TaskWhereInput
+  AND: [SubTaskWhereInput!]
+  OR: [SubTaskWhereInput!]
+  NOT: [SubTaskWhereInput!]
+}
+
+input SubTaskWhereUniqueInput {
+  id: ID
+}
+
+type Task {
+  id: ID!
+  taskName: String!
+  subTasks(where: SubTaskWhereInput, orderBy: SubTaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SubTask!]
+  user: User
+}
+
+type TaskConnection {
+  pageInfo: PageInfo!
+  edges: [TaskEdge]!
+  aggregate: AggregateTask!
+}
+
+input TaskCreateInput {
+  taskName: String!
+  subTasks: SubTaskCreateManyWithoutTaskInput
+  user: UserCreateOneWithoutTasksInput
+}
+
+input TaskCreateManyWithoutUserInput {
+  create: [TaskCreateWithoutUserInput!]
+  connect: [TaskWhereUniqueInput!]
+}
+
+input TaskCreateOneWithoutSubTasksInput {
+  create: TaskCreateWithoutSubTasksInput
+  connect: TaskWhereUniqueInput
+}
+
+input TaskCreateWithoutSubTasksInput {
+  taskName: String!
+  user: UserCreateOneWithoutTasksInput
+}
+
+input TaskCreateWithoutUserInput {
+  taskName: String!
+  subTasks: SubTaskCreateManyWithoutTaskInput
+}
+
+type TaskEdge {
+  node: Task!
+  cursor: String!
+}
+
+enum TaskOrderByInput {
+  id_ASC
+  id_DESC
+  taskName_ASC
+  taskName_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type TaskPreviousValues {
+  id: ID!
+  taskName: String!
+}
+
+input TaskScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  taskName: String
+  taskName_not: String
+  taskName_in: [String!]
+  taskName_not_in: [String!]
+  taskName_lt: String
+  taskName_lte: String
+  taskName_gt: String
+  taskName_gte: String
+  taskName_contains: String
+  taskName_not_contains: String
+  taskName_starts_with: String
+  taskName_not_starts_with: String
+  taskName_ends_with: String
+  taskName_not_ends_with: String
+  AND: [TaskScalarWhereInput!]
+  OR: [TaskScalarWhereInput!]
+  NOT: [TaskScalarWhereInput!]
+}
+
+type TaskSubscriptionPayload {
+  mutation: MutationType!
+  node: Task
+  updatedFields: [String!]
+  previousValues: TaskPreviousValues
+}
+
+input TaskSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: TaskWhereInput
+  AND: [TaskSubscriptionWhereInput!]
+  OR: [TaskSubscriptionWhereInput!]
+  NOT: [TaskSubscriptionWhereInput!]
+}
+
+input TaskUpdateInput {
+  taskName: String
+  subTasks: SubTaskUpdateManyWithoutTaskInput
+  user: UserUpdateOneWithoutTasksInput
+}
+
+input TaskUpdateManyDataInput {
+  taskName: String
+}
+
+input TaskUpdateManyMutationInput {
+  taskName: String
+}
+
+input TaskUpdateManyWithoutUserInput {
+  create: [TaskCreateWithoutUserInput!]
+  delete: [TaskWhereUniqueInput!]
+  connect: [TaskWhereUniqueInput!]
+  disconnect: [TaskWhereUniqueInput!]
+  update: [TaskUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [TaskUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [TaskScalarWhereInput!]
+  updateMany: [TaskUpdateManyWithWhereNestedInput!]
+}
+
+input TaskUpdateManyWithWhereNestedInput {
+  where: TaskScalarWhereInput!
+  data: TaskUpdateManyDataInput!
+}
+
+input TaskUpdateOneWithoutSubTasksInput {
+  create: TaskCreateWithoutSubTasksInput
+  update: TaskUpdateWithoutSubTasksDataInput
+  upsert: TaskUpsertWithoutSubTasksInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: TaskWhereUniqueInput
+}
+
+input TaskUpdateWithoutSubTasksDataInput {
+  taskName: String
+  user: UserUpdateOneWithoutTasksInput
+}
+
+input TaskUpdateWithoutUserDataInput {
+  taskName: String
+  subTasks: SubTaskUpdateManyWithoutTaskInput
+}
+
+input TaskUpdateWithWhereUniqueWithoutUserInput {
+  where: TaskWhereUniqueInput!
+  data: TaskUpdateWithoutUserDataInput!
+}
+
+input TaskUpsertWithoutSubTasksInput {
+  update: TaskUpdateWithoutSubTasksDataInput!
+  create: TaskCreateWithoutSubTasksInput!
+}
+
+input TaskUpsertWithWhereUniqueWithoutUserInput {
+  where: TaskWhereUniqueInput!
+  update: TaskUpdateWithoutUserDataInput!
+  create: TaskCreateWithoutUserInput!
+}
+
+input TaskWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  taskName: String
+  taskName_not: String
+  taskName_in: [String!]
+  taskName_not_in: [String!]
+  taskName_lt: String
+  taskName_lte: String
+  taskName_gt: String
+  taskName_gte: String
+  taskName_contains: String
+  taskName_not_contains: String
+  taskName_starts_with: String
+  taskName_not_starts_with: String
+  taskName_ends_with: String
+  taskName_not_ends_with: String
+  subTasks_every: SubTaskWhereInput
+  subTasks_some: SubTaskWhereInput
+  subTasks_none: SubTaskWhereInput
+  user: UserWhereInput
+  AND: [TaskWhereInput!]
+  OR: [TaskWhereInput!]
+  NOT: [TaskWhereInput!]
+}
+
+input TaskWhereUniqueInput {
+  id: ID
 }
 
 type User {
@@ -180,6 +649,8 @@ type User {
   email: String!
   password: String
   google: GoogleAuth
+  tasks(where: TaskWhereInput, orderBy: TaskOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Task!]
+  admin: Boolean
 }
 
 type UserConnection {
@@ -193,6 +664,8 @@ input UserCreateInput {
   email: String!
   password: String
   google: GoogleAuthCreateOneWithoutUserInput
+  tasks: TaskCreateManyWithoutUserInput
+  admin: Boolean
 }
 
 input UserCreateOneWithoutGoogleInput {
@@ -200,10 +673,25 @@ input UserCreateOneWithoutGoogleInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateOneWithoutTasksInput {
+  create: UserCreateWithoutTasksInput
+  connect: UserWhereUniqueInput
+}
+
 input UserCreateWithoutGoogleInput {
   name: String!
   email: String!
   password: String
+  tasks: TaskCreateManyWithoutUserInput
+  admin: Boolean
+}
+
+input UserCreateWithoutTasksInput {
+  name: String!
+  email: String!
+  password: String
+  google: GoogleAuthCreateOneWithoutUserInput
+  admin: Boolean
 }
 
 type UserEdge {
@@ -220,6 +708,8 @@ enum UserOrderByInput {
   email_DESC
   password_ASC
   password_DESC
+  admin_ASC
+  admin_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -231,6 +721,7 @@ type UserPreviousValues {
   name: String!
   email: String!
   password: String
+  admin: Boolean
 }
 
 type UserSubscriptionPayload {
@@ -256,12 +747,15 @@ input UserUpdateInput {
   email: String
   password: String
   google: GoogleAuthUpdateOneWithoutUserInput
+  tasks: TaskUpdateManyWithoutUserInput
+  admin: Boolean
 }
 
 input UserUpdateManyMutationInput {
   name: String
   email: String
   password: String
+  admin: Boolean
 }
 
 input UserUpdateOneWithoutGoogleInput {
@@ -273,15 +767,39 @@ input UserUpdateOneWithoutGoogleInput {
   connect: UserWhereUniqueInput
 }
 
+input UserUpdateOneWithoutTasksInput {
+  create: UserCreateWithoutTasksInput
+  update: UserUpdateWithoutTasksDataInput
+  upsert: UserUpsertWithoutTasksInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: UserWhereUniqueInput
+}
+
 input UserUpdateWithoutGoogleDataInput {
   name: String
   email: String
   password: String
+  tasks: TaskUpdateManyWithoutUserInput
+  admin: Boolean
+}
+
+input UserUpdateWithoutTasksDataInput {
+  name: String
+  email: String
+  password: String
+  google: GoogleAuthUpdateOneWithoutUserInput
+  admin: Boolean
 }
 
 input UserUpsertWithoutGoogleInput {
   update: UserUpdateWithoutGoogleDataInput!
   create: UserCreateWithoutGoogleInput!
+}
+
+input UserUpsertWithoutTasksInput {
+  update: UserUpdateWithoutTasksDataInput!
+  create: UserCreateWithoutTasksInput!
 }
 
 input UserWhereInput {
@@ -342,6 +860,11 @@ input UserWhereInput {
   password_ends_with: String
   password_not_ends_with: String
   google: GoogleAuthWhereInput
+  tasks_every: TaskWhereInput
+  tasks_some: TaskWhereInput
+  tasks_none: TaskWhereInput
+  admin: Boolean
+  admin_not: Boolean
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
