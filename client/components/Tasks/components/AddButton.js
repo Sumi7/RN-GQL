@@ -1,76 +1,43 @@
 import React, { Component } from 'react'
 import { Modal, View, TouchableHighlight, StyleSheet, ActivityIndicator } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import gql from 'graphql-tag'
-// import { input } from 'graphql'
-import { Mutation, Query, withApollo } from 'react-apollo'
-import CreateCard from './create'
+import { withApollo } from 'react-apollo'
 
-const ADD_TASKS = gql`
-	mutation addTask($taskName: String!, $subTasks: [SubTasksInput]!) {
-		addTask(taskName: $taskName, subTasks:$subTasks) {
-			taskName
-			subTasks {
-				id
-				index
-				value
-				completed
-			}
-		}
-	}
-`
+import { Mutations } from '../operations'
+import CreateCard from './Create'
 
 class AddButton extends Component {
-	constructor() {
-		super()
-
-		this.state = {
-			taskName: '',
-			subTasks: [],
-			loading: false
-		}
-	}
-
-	addSubtask = () => {
-		const defaultSubTaskValues = {
-			index: this.state.subTasks.length,
-			value: '',
-			completed: false
-		}
-
-		this.setState(prevState => (
-			{ subTasks: [...prevState.subTasks, defaultSubTaskValues] }
-		))
-	}
-
-	onSubTaskChange = (updatedStData) => {
-		this.setState(prevState => (
-			{
-				subTasks: prevState.subTasks.map(st => {
-					if (st.id = updatedStData.id) {
-						return { ...st, ...updatedStData }
-					}
-					return st
-				})
-			}
-		))
+	constructor(props) {
+		super(props)
+		this.state = {loading: false}
 	}
 
 	onAddButtonPress = async () => {
-		const { taskName, subTasks } =this.state
-		const { extendButton, client } = this.props
+		const { task: {taskName, subTasks, id}, extendButton, client} =this.props
 		if(extendButton) {
 			this.setState({ loading: true })
 			try {
-				await client.mutate({
-					mutation: ADD_TASKS,
-					variables: {
-						taskName,
-						subTasks
-					}
-				})
+				if(id) {
+					await client.mutate({
+						mutation: Mutations.UPDATE_TASK,
+						variables: {
+							id,
+							taskName,
+							subTasks
+						}
+					})
+				} else {
+					await client.mutate({
+						mutation: Mutations.ADD_TASK,
+						variables: {
+							taskName,
+							subTasks
+						}
+					})
+				}
 				this.setState({ loading: false })
 			} catch(e) {
+				this.setState({ loading: false })
 				console.log(e)
 			}
 		}
@@ -78,24 +45,24 @@ class AddButton extends Component {
 	}
 
 	render() {
-		const { extendButton } = this.props
+		const { task: { taskName, subTasks }, extendButton } = this.props
 		return (
 			<View style={{ ...styles.mainWrapper, ...!extendButton ? styles.wrapperNonExtended : {} }}>
 				{
 					extendButton && (
 						<View style={{ ...styles.cardContent }}> 
 							<CreateCard 
-								taskName={this.state.taskName}
-								setTaskName={ taskName => this.setState({taskName})}
-								subTasks={this.state.subTasks}
-								onSubTaskChange={this.onSubTaskChange}
-								addSubtask={this.addSubtask}
+								taskName={taskName}
+								setTaskName={ taskName => this.props.handleTaskName(taskName)}
+								subTasks={subTasks}
+								onSubTaskChange={this.props.onSubTaskChange}
+								addSubtask={this.props.addSubtask}
 							/>
 						</View>
 					)
 				}
 				<View style={{ ...styles.buttonWrapper, ...extendButton ? styles.extendedButtonWrapper : {} }}>
-					<TouchableHighlight onPress={() => this.onAddButtonPress()} style={{...styles.button, ...extendButton ? styles.extendedButton : {} }} activeOpacity={10} underlayColor="#00D8B6" >
+					<TouchableHighlight onPress={() => this.onAddButtonPress()} elevation={ extendButton ? 2 : 0 } style={{...styles.button, ...extendButton ? styles.extendedButton : {} }} activeOpacity={10} underlayColor="#00D8B6" >
 						<MaterialCommunityIcons name="plus" size={30} color="#fff" />
 					</TouchableHighlight>
 				</View>
@@ -134,8 +101,6 @@ const styles = StyleSheet.create({
 	},
 	cardContent: {
 		flex: 1,
-		borderWidth: 2,
-		borderColor: 'red',
 		backgroundColor: '#000'
 	},
 	buttonWrapper: {

@@ -2,19 +2,26 @@ import React, { useState } from 'react'
 import { View, StyleSheet, TextInput, TouchableHighlight } from 'react-native'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 
-const CustomCheckBox = ({ data, data:{value, completed}, onSubTaskChange }) => {
+const CustomCheckBox = ({ data:{value, completed, index}, onSubTaskChange }) => {
 	const [taskName, onSubTaskNamechange] = useState(value)
 	const [isCompleted, onCompleted] = useState(completed)
 	const [isBlurred, onBlur] = useState(false)
 
-	const updateSubtask = () => {
+	const handleCheckBox = (completed) => {
+		onCompleted(completed);
 		onBlur(true);
-		onSubTaskChange({ ...data, value, completed})
+		console.log('changing', { index, value, completed })
+		onSubTaskChange({ index, value, completed })
+	}
+
+	const handleInput = (value) => {
+		onBlur(true);
+		onSubTaskChange({ index, value, completed: isCompleted})
 	}
 	
 	return (
 		<View style={styles.wrapper}>
-			<TouchableHighlight style={styles.checkbox} onPress={() => { onCompleted(!isCompleted); return updateSubtask() }}>
+			<TouchableHighlight style={styles.checkbox} onPress={() => handleCheckBox(!isCompleted)}>
 				<View>
 					{ isCompleted && <MaterialCommunityIcons name='check' size={18} color='#fff'/> }					
 				</View>
@@ -24,11 +31,11 @@ const CustomCheckBox = ({ data, data:{value, completed}, onSubTaskChange }) => {
 				autoCorrect={true}
 				autoFocus={false}
 				clearButtonMode='always'
-				onChangeText={taskName => { onBlur(false); onSubTaskNamechange(taskName)} }
+				onChangeText={value => onSubTaskNamechange(value) }
 				value={taskName}
-				onBlur={updateSubtask}
+				onBlur={handleInput}
 				underlineColorAndroid='transparent'
-				onSubmitEditing={updateSubtask}
+				onSubmitEditing={handleInput}
 				placeholderTextColor='white'
 				style={{ ...styles.labelInput, borderColor: isBlurred ? '#000' : '#fff' }}
 			/>

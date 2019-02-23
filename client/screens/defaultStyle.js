@@ -1,8 +1,13 @@
-const defaultStyle = {
+export const defaultStyle = {
   headerStyle: {
-    backgroundColor: '#000000',
+    backgroundColor: 'white',
   },
-  headerTintColor: '#ffffff'
+  headerTintColor: 'black'
 }
 
-export default defaultStyle
+export const darkTheme = {
+  headerStyle: {
+    backgroundColor: 'black',
+  },
+  headerTintColor: 'white'
+}

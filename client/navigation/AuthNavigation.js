@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 import AuthScreen from '../screens/AuthScreen';
 
 const AuthStack = createStackNavigator({
@@ -10,4 +10,4 @@ AuthStack.navigationOptions = {
   tabBarVisible: false
 }
 
-export default AuthStack
+export default createAppContainer(AuthStack)

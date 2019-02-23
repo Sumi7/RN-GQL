@@ -80,7 +80,6 @@ async function googleAuth(parent, args, context, info) {
 }
 
 async function addTask(parent, { taskName, subTasks }, context, info) {
-	console.log('add Task')
 	const userId = await getUserId(context)
 	let task
 	// if(!user.tasks) {
@@ -106,9 +105,83 @@ async function addTask(parent, { taskName, subTasks }, context, info) {
 	return task
 }
 
+async function addMembers(parent, { member }, context, info) {
+	const userId = await getUserId(context)
+	
+	await context.db.mutation.updateUser({
+		where: { id: member},
+		data: {
+			members: {
+				connect: {
+					id: userId
+				}
+			}
+		}
+	}, info)
+
+	let task = await context.db.mutation.updateUser({
+		where: { id: userId},
+		data: {
+			members: {
+				connect: {
+					id: member
+				}
+			}
+		}
+	}, info)
+
+
+	return task
+}
+
+async function updateTask(parent, { taskName, subTasks, id }, context, info) {
+	console.log('update Task')
+	const userId = await getUserId(context)
+	let task
+	// if(!user.tasks) {
+	//update subtasks first
+	subTasks.map( async (sub) => {
+		await context.db.mutation.upsertSubTask({
+			where: {index: sub.index},
+			create: { 
+				...sub, 
+				task: {
+					connect: {
+						id
+					}
+				} 
+			},
+			update: {
+				...sub, 
+				task: {
+					connect: {
+						id
+					}
+				} 
+			}
+		})
+	})
+
+	task = await context.db.mutation.updateTask({
+		where: { id },
+		data: {
+			taskName
+		}
+	}, info)
+	// await context.db.mutation.updateTask({ data: { subTasks }, where: { id: task.id } })
+	// } else {
+	// 	task = await context.db.mutation.updateTask({
+	// 		data: { taskName: taskName, subTasks: subTasks }
+	// 	})
+	// }
+	return task
+}
+
 module.exports = {
 	signup,
 	login,
 	googleAuth,
-	addTask
+	addTask,
+	addMembers,
+	updateTask
 }

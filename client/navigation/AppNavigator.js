@@ -1,9 +1,9 @@
-import { createSwitchNavigator } from 'react-navigation';
+import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
 import AuthNavigator from './AuthNavigation';
 
-export const createRootNavigator = (initialRouteName) => {
+const CreateRootNavigator = ({initialRouteName}) => {
   return createSwitchNavigator(
     {
       Auth: AuthNavigator,
@@ -14,3 +14,4 @@ export const createRootNavigator = (initialRouteName) => {
     }
   )
 };
+export default createAppContainer(CreateRootNavigator)

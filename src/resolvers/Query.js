@@ -11,7 +11,16 @@ const getTasks = async (parent, args, context, info) => {
 	return await context.db.query.tasks({ where: { user: { id: userId} } }, info)
 }
 
+const searchUsers = async (parent, {user}, context, info) => {
+	const userId = await getUserId(context)
+	const where = user
+		? { OR: [{ name_contains: user }, { email_contains: user }] }
+		: {}
+	return await context.db.query.users({ where }, info)
+}
+
 module.exports = {
 	users,
-	getTasks
+	getTasks,
+	searchUsers
 }

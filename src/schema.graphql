@@ -3,6 +3,7 @@
 type Query {
   info: String
   users(filter: String): [User]!
+  searchUsers(user: String): [User]!
   getTasks: [Task]!
 }
 
@@ -11,6 +12,8 @@ type Mutation {
   googleAuth(name: String!, email: String!, googleId: String!): AuthPayload
   login(email: String!, password: String!): AuthPayload
   addTask(taskName: String!, subTasks: [SubTasksInput]!): Task
+  updateTask(id: String!, taskName: String!, subTasks: [SubTasksInput]!): Task
+  addMembers(member: String!): User
 }
 
 type AuthPayload {
@@ -28,5 +31,6 @@ type User {
   id: ID!
   name: String!
   email: String!
+  members: [User!]!
   tasks: [Task]!
 }

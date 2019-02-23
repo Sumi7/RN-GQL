@@ -3,7 +3,9 @@ import '@babel/polyfill'
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon, Calendar, Permissions } from 'expo';
-import { createRootNavigator } from './navigation/AppNavigator';
+import CreateRootNavigator from './navigation/AppNavigator';
+import MainTabNavigator from './navigation/MainTabNavigator';
+import AuthNavigator from './navigation/AuthNavigation';
 import { ApolloProvider } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
 import { createHttpLink } from 'apollo-link-http'
@@ -75,7 +77,7 @@ const authMiddleware = setContext(async (request, { headers }) => {
 
 const client = new ApolloClient({
   link: authMiddleware.concat(httpLink),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache({ addTypename: false })
 })
 
 export default class App extends React.Component {
@@ -105,13 +107,12 @@ export default class App extends React.Component {
         />
       )
     } else {
-      const initialRouteName = this.token ? "App" : "Auth"
-      const Navigator = createRootNavigator(initialRouteName)
+      // const Navigator = createRootNavigator(initialRouteName)
       return (
         <ApolloProvider client={client}>
           <View style={styles.container}>
             {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-            <Navigator />
+            {this.token ? <MainTabNavigator /> :  <AuthNavigator />}
           </View>
         </ApolloProvider>
       );
@@ -126,10 +127,7 @@ export default class App extends React.Component {
         require('./assets/icons/icons8-right-24.png')
       ]),
       Font.loadAsync({
-        // This is the font that we are using for our tab bar
         ...Icon.Ionicons.font,
-        // We include SpaceMono because we use it in HomeScreen.js. Feel free
-        // to remove this if you are not using it in your app
         'NunitoSans': require('./assets/fonts/NunitoSans-Bold.ttf'),
       })
     ]);

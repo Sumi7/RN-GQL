@@ -2,9 +2,9 @@ import React from 'react';
 import { View } from 'react-native';
 import defaultStyle from './defaultStyle'
 
-export default class SettingsScreen extends React.Component {
+export default class calendar extends React.Component {
   static navigationOptions = {
-    title: 'app.json',
+    title: 'calendar',
     ...defaultStyle
   };
 

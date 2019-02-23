@@ -5,6 +5,7 @@ type User {
   password: String
   google: GoogleAuth @relation(name: "GoogleAuth" onDelete: CASCADE)
   tasks: [Task]! @relation(name: "Task" onDelete: CASCADE)
+  members: [User!]!
   admin: Boolean
 }
 
@@ -17,12 +18,13 @@ type Task {
   id: ID! @unique
   taskName: String!
   subTasks: [SubTask]! @relation(name: "SubTask" onDelete: CASCADE)
+  members:[String!]!
   user: User @relation(name: "Task")
 }
 
 type SubTask {
   id: ID! @unique
-  index: Int!
+  index: Int! @unique
   value: String!
   completed: Boolean!
   task: Task @relation(name: "SubTask")

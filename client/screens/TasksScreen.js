@@ -1,47 +1,105 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, View, TouchableHighlight } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { withApollo } from 'react-apollo'
 
-import defaultStyle from './defaultStyle'
-import AddButton from '../components/Tasks'
-import TasksContainer from '../components/Tasks/displayTasks'
+import { defaultStyle } from './defaultStyle'
+import AddButton from '../components/Tasks/components/AddButton'
+import TasksContainer from '../components/Tasks/components/DisplayTasks'
 
-export default class TodosScreen extends React.Component {  
-  state = {
-    showCard: false
+class TodosScreen extends Component {
+  constructor() {
+    super()
+    this.state = {
+      showCard: false,
+      task: {
+        id: '',
+        taskName: '',
+        subTasks: []
+      }
+    }
   }
   
   static navigationOptions = ({ navigation }) => {
     return {
       title: navigation.getParam('title', 'Tasks'),
-      headerLeft: navigation.getParam('headerLeft', null),
-      ...defaultStyle
+      headerLeft: navigation.getParam('HeaderLeft', null),
+      headerStyle: {
+        backgroundColor: '#fff'
+      },
+      headerTintColor: navigation.getParam('HeaderTintColor', defaultStyle.HeaderTintColor)
     };
   };
 
+  addSubtask = () => {
+    const defaultSubTaskValues = {
+      index: this.state.task.subTasks.length,
+      value: '',
+      completed: false
+    }
 
-  onPressHandler = (bool) => {
-    if(bool) {
+    this.setState(prevState => (
+      { task: {...prevState.task, subTasks: [...prevState.task.subTasks, defaultSubTaskValues]} }
+    ))
+  }
+
+  onSubTaskChange = (updatedStData) => {
+    this.setState( prevState => (
+      {
+        task: {
+          ...prevState.task,
+          subTasks: prevState.task.subTasks.map(st => {
+            if (st.index === updatedStData.index) {
+              return updatedStData
+            }
+            return st
+          }),
+        }
+      }
+    ))
+  }
+
+  onPressHandler = (flag, Title='Add task') => {
+    if(flag) {
       this.props.navigation.setParams({ 
-        title : 'Add task' ,
-        headerLeft: (
+        Title : Title ,
+        HeaderLeft: (
           <TouchableHighlight style={styles.closeButton} onPress={() => this.onPressHandler(false)} activeOpacity={10} underlayColor="#00D8B6" >
             <MaterialCommunityIcons name="close" size={18} color="#000" />
           </TouchableHighlight>
         )
       })
     } else {
-      this.props.navigation.setParams({ headerLeft: null })
+      this.props.navigation.setParams({ 
+        HeaderLeft: null,
+        Title: 'Tasks'
+      })
     }
-    this.setState({ showCard: bool })
+    this.setState({ showCard: flag })
+  }
+
+  updateTaskHandler = (task) => {
+    this.setState({task: task})
+    this.onPressHandler(true, 'Update task')
+  }
+
+  handleTaskName = (taskName) => {
+    this.setState( prevState => ({ task: {...prevState.task, taskName} }) )
   }
 
   render() {
     return (
       <View style={{ ...styles.container, ...this.state.showCard ? { backgroundColor: '#000' } : {} }}>
-        <TasksContainer />
+        {!this.state.showCard && <TasksContainer updateTask={this.updateTaskHandler}/>}
         <View style={{ ...styles.fixedButton, ...this.state.showCard ? styles.showCard : {} }}>
-          <AddButton onPressHandler={this.onPressHandler} extendButton={this.state.showCard} />
+          <AddButton 
+            onPressHandler={this.onPressHandler} 
+            extendButton={this.state.showCard} 
+            task={this.state.task} 
+            handleTaskName={this.handleTaskName}
+            addSubtask={this.addSubtask}
+            onSubTaskChange={this.onSubTaskChange}
+          />
         </View>
       </View>
     );
@@ -74,3 +132,5 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   }
 });
+
+export default withApollo(TodosScreen)

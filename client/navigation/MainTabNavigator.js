@@ -1,53 +1,69 @@
 import React from 'react';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import { createStackNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 import TabBarIcon from '../components/common/TabBarIcon';
 import TasksScreen from '../screens/TasksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import Calendar from '../screens/calendar';
 
-const TodosStack = createStackNavigator({
-  Todos: TasksScreen,
+const defaulNavOptions = {
+  headerStyle: {
+    elevation: 0,
+    shadowOpacity: 0,
+  }
+}
+
+const TasksStack = createStackNavigator({
+  Todos: {
+    screen: TasksScreen,
+    navigationOptions: () => ({
+      ...defaulNavOptions,
+    }),
+  }
 });
 
-TodosStack.navigationOptions = {
+TasksStack.navigationOptions = {
   tabBarLabel: 'Tasks',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
-      focused={focused}
-      name='clipboard-check-outline'
+    focused={focused}
+    name='clipboard-check-outline'
     />
   ),
 };
 
-const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen,
+const Calendarstack = createStackNavigator({
+  Settings: Calendar,
 });
 
-SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
+Calendarstack.navigationOptions = {
+  tabBarLabel: 'Calendar',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name='settings'
+      name='calendar-check'
     />
   ),
+  ...defaulNavOptions
 };
 
-export default createBottomTabNavigator(
+const bottomTabNavigator = createBottomTabNavigator(
   {
-    TodosStack,
-    SettingsStack,
+    TasksStack,
+    Calendarstack,
   },
   {
-    initialRouteName: 'TodosStack',
+    initialRouteName: 'TasksStack',
     tabBarOptions: {
-      activeTintColor: '#00D8B6',
+      activeTintColor: '#000',
       labelStyle: {
         fontSize: 12,
+        fontWeight: '500'
       },
       style: {
-        backgroundColor: 'black',
+        backgroundColor: 'white',
       },
     }
   },
-  );
+);
+
+export default createAppContainer(bottomTabNavigator)

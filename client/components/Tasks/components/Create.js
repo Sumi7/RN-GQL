@@ -1,12 +1,13 @@
 import React from 'react'
 import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native'
-import CustomInput from '../common/input'
-import CustomCheckBox from '../common/checkBox'
-import { NunitoSans } from '../common/StyledText'
+import CustomInput from '../../common/input'
+import CustomCheckBox from '../../common/checkBox'
+import { NunitoSans } from '../../common/StyledText'
 
 const SubTasks = ({subTasks, onSubTaskChange}) => subTasks.map( st => <CustomCheckBox key={`subTask-${st.index}`} data={st} onSubTaskChange={onSubTaskChange} />)
 
-const CreateTaskCard = ({ taskName, setTaskName, subTasks, onSubTaskChange, addSubtask } ) => {
+const CreateTaskCard = ({ taskName, setTaskName, subTasks, onSubTaskChange, addSubtask, updateTask }) => {
+	const onPressAction = updateTask ? updateTask : addSubtask
 	return (
 		<View style={styles.container}>
 			<CustomInput
@@ -20,7 +21,7 @@ const CreateTaskCard = ({ taskName, setTaskName, subTasks, onSubTaskChange, addS
 			/>
 			<ScrollView style={{ width: '100%' }} contentContainerStyle={{ ...styles.scroll }} alwaysBounceVertical={true}>
 				{ subTasks.length > 0 && <SubTasks subTasks={subTasks} onSubTaskChange={onSubTaskChange} /> }
-				<TouchableOpacity onPress={addSubtask} style={styles.addButton}>
+				<TouchableOpacity onPress={onPressAction} style={styles.addButton}>
 					<NunitoSans style={{ color: '#fff' }}> + Add subtask </NunitoSans>
 				</TouchableOpacity>
 			</ScrollView>

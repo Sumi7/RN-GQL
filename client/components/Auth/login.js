@@ -42,7 +42,6 @@ function Login({ navigation: { navigate }, switchToSignup }) {
 	const handleHardwareBackPress = () => {
 		if (passwordField) {
 			showPasswordField(false)
-			return true
 		}
 	}
 
